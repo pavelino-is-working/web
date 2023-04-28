@@ -1,0 +1,42 @@
+version: '3'
+services:
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: tic_tac_toe
+      MYSQL_USER: admin_x_o
+      MYSQL_PASSWORD: adminpasswordlol
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - tic-tac-toe-net    
+  www:
+    depends_on:
+      - db
+    build: .
+    volumes:
+      - "./:/var/www/html"
+    ports:
+      - 80:80
+      - 443:443
+
+    networks:
+      - tic-tac-toe-net
+
+  phmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    ports:
+    - 8001:80
+    environment:
+    - PHA_HOST=db
+    - PHA_PORT=3306
+    networks:
+      - tic-tac-toe-net
+networks:
+  tic-tac-toe-net:
+    driver: bridge
+
+
